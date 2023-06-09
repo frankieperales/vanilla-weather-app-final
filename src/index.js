@@ -1,64 +1,112 @@
-let now = new Date();
-let days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-let day = days[now.getDay()];
-
-let hour = now.getHours();
-let minutes = now.getMinutes();
-if (minutes < 10) {
-  minutes = "0" + minutes;
-} else {
-  minutes = minutes + "";
-  let h2 = document.querySelector("h2");
-  h2.innerHTML = `${day} ${hour}:${minutes}`;
+function formateDate(timestamp) {
+  let date = new Date(timestamp);
+  let hours = date.getHours();
+  if (hours < 10) {
+    hours = `0${hours}`;
+  }
+  let minutes = date.getMinutes();
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+  let days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  let day = days[date.getDay()];
+  return `${day} ${hours}:${minutes}`;
 }
 
-////
+function formatDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let day = date.getDay();
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return days[day];
+}
 
-function searching(event) {
+function displayForecast(response) {
+  let forecast = response.data.daily;
+  let forecastElement = document.querySelector("#forecast");
+  let forecastHTML = `<div class="row">`;
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 6) {
+      forecastHTML =
+        forecastHTML +
+        ` <div class="col-2">
+                <div class="weather-forcast-date">${formatDay(
+                  forecastDay.time
+                )}</div>
+                <img
+                  src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${
+                    forecastDay.condition.icon
+                  }.png"
+                  alt=""
+                  width="42"
+                />
+                <div class="weather-forcast-temperatures">
+                  <span class="weather-forcast-temperature-max">${Math.round(
+                    forecastDay.temperature.maximum
+                  )}°</span>
+                  <span class="weather-forcast-temperature-min">${Math.round(
+                    forecastDay.temperature.minimum
+                  )}°</span>
+                </div>
+              </div>
+            `;
+    }
+  });
+  forecastHTML = forecastHTML + `</div>`;
+  forecastElement.innerHTML = forecastHTML;
+}
+function getForecast(coordinates) {
+  let apiKey = "5e164bf624o32a114c22f8b0da3t6abf";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.longitude}&lat=${coordinates.latitude}&key=${apiKey}&units=imperial`;
+  axios.get(apiUrl).then(displayForecast);
+}
+
+function displayTemperature(response) {
+  let temperatureElement = document.querySelector("#temperature");
+  let cityElement = document.querySelector("#city");
+  let descriptionElement = document.querySelector("#description");
+  let humidityElement = document.querySelector("#humidity");
+  let windElement = document.querySelector("#wind");
+  let dateElement = document.querySelector("#date");
+  let iconElement = document.querySelector("#icon");
+
+  celsiusTemperature = response.data.temperature.current;
+
+  temperatureElement.innerHTML = Math.round(response.data.temperature.current);
+  cityElement.innerHTML = response.data.city;
+  descriptionElement.innerHTML = response.data.condition.description;
+  humidityElement.innerHTML = response.data.temperature.humidity;
+  windElement.innerHTML = Math.round(response.data.wind.speed);
+  dateElement.innerHTML = formateDate(response.data.time * 1000);
+  iconElement.setAttribute(
+    "src",
+    `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`
+  );
+  iconElement.setAttribute("alt", response.data.condition.description);
+
+  getForecast(response.data.coordinates);
+}
+
+function search(city) {
+  let apiKey = "5e164bf624o32a114c22f8b0da3t6abf";
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}}&key=${apiKey}&units=imperial`;
+  axios.get(apiUrl).then(displayTemperature);
+}
+
+function handleSubmit(event) {
   event.preventDefault();
-  let apiKey = "667d9f573c8af4c33457be5d561a9148";
-  let city = document.querySelector("#city-input").value;
-  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
-  axios.get(apiUrl).then(showResults);
-}
-function showResults(response) {
-  console.log(response.data);
-  let getCity = response.data.name;
-  let header = document.querySelector("#currentLocation");
-  currentLocation.innerHTML = `${getCity}`;
-
-  let getTemp = response.data.main.temp;
-  let subHeader = document.querySelector("#temperature");
-  subHeader.innerHTML = `${getTemp}`;
+  let cityInputElement = document.querySelector("#city-input");
+  search(cityInputElement.value);
 }
 
-let submitButton = document.querySelector(".search-form");
-submitButton.addEventListener("submit", searching);
+let form = document.querySelector("#search-form");
+form.addEventListener("submit", handleSubmit);
 
-function convertToFahrenheight(event) {
-  event.preventDefault();
-  let strong = document.querySelector("#temperature");
-  strong.innerHTML = 57;
-}
-
-function convertToCelsius(event) {
-  event.preventDefault();
-  let strong = document.querySelector("#temperature");
-  strong.innerHTML = 14;
-}
-
-function getPosition(position) {
-  let lat = position.coords.latitude;
-  let lon = position.coords.longitude;
-  let apiKey = "667d9f573c8af4c33457be5d561a9148";
-  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
-
-  axios.get(`${apiUrl}&appid=${apiKey}`).then(showResults);
-}
-function getCurrentLocation(event) {
-  event.preventDefault();
-  navigator.geolocation.getCurrentPosition(getPosition);
-}
-
-let currentButton = document.querySelector("#submit-button");
-currentButton.addEventListener("click", getCurrentLocation);
+search("New York");
