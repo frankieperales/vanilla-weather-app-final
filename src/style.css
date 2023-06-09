@@ -1,8 +1,7 @@
 body {
-  font-family: "Open Sans", sans-serif;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-color: #cccccc;
+  font-family: arial, sans-serif;
+  background-color: #fcf4a7;
+  padding-top: 150px;
 }
 h1 {
   color: 878787;
