@@ -1,0 +1,108 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  background-image: url("images/backgrounds.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #cccccc;
+}
+
+h1,
+h2 {
+  text-align: left;
+}
+h1 {
+  font-size: 35px;
+  margin: 0;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: -7rem;
+  padding: auto;
+}
+ul {
+  position: relative;
+  bottom: 125px;
+  left: 225px;
+  font-weight: normal;
+  font-size: 12px;
+}
+li {
+  list-style: none;
+}
+
+.container {
+  margin-top: 100px;
+  padding: 70px;
+  border: 1px solid rgb(68, 73, 76);
+  border-radius: 10px;
+  padding-top: 65px;
+}
+
+.search-bar {
+  margin-bottom: 30px;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 18px;
+  padding: 3px;
+}
+.btn-primary {
+  position: flex;
+  left: 5px;
+  background: #0b72a0;
+  border: gray;
+  border-radius: 5px;
+  font-size: 18px;
+  width: 50%;
+  transition: all 200ms ease-in-out;
+  color: white;
+  padding: 5px 10px;
+}
+.btn-primary:hover {
+  background: rgb(126, 163, 188);
+  border: #0b72a0;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.current-weather {
+  width: 80px;
+}
+
+.farenheit {
+  font-weight: bold;
+  padding: 10px auto;
+}
+.pw {
+  font-size: 20px;
+  font-weight: light;
+  top: -55px;
+  left: 190px;
+  bottom: 112px;
+}
+
+.flex-container {
+  width: 100%;
+  border: none;
+  margin-top: -3rem;
+  margin-bottom: -7rem;
+  margin-right: -1.5rem;
+}
+.sun,
+.mon,
+.tue {
+  margin-left: -0.6rem;
+  font-weight: bold;
+}
+.wed {
+  margin-left: 0.1rem;
+  font-weight: bold;
+}
+.thur {
+  margin-left: -0.2px;
+  font-weight: bold;
+}
+.temp {
+  font-weight: bold;
+}
